@@ -4,8 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+flask-cors = "*"
+flask-wtf = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+flask = {extras = ["async"], version = "*"}
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3.11"
+
+[scripts]
+dev = "flask --app url_shortener.py --debug run"
+test = "pytest ./app"

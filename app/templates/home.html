@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles/homepage.css') }}">
+    <script defer src="{{url_for('static', filename='/js/session.js')}}"></script>
+{% endblock head %}
+{% block content %}
+    <div class="home-modal">
+        <h1>URL Shortener</h1>
+        <p>A URL shortener is a tool that helps to reduce the length of a long URL, making it easier to share or save. It replaces a long, complicated URL with a short, simple one, often using a custom domain name. By shortening the URL, it also makes it easier to remember, track, and share on social media platforms. This web page provides information about URL shortening and how it can be used.</p>
+
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                 <h3>Enter URL</h3>
+                 {{ form.url() }}
+                 {% for error in form.url.errors %}
+                    <span style="color: red">[{{ error }}]</span>
+                 {% endfor %}
+                 {{ form.submit() }}
+            </p>
+        </form>
+
+        {% if result %}
+        <div class="result-modal">
+            <p>{{result[1]}}</p>
+            <p>
+                <a id="short-url" class="short-url" rel="external" href="//{{result[1]}}" >localhost:5000/{{result[0]}}</a>
+            </p>
+            <button onclick="copyToClipboard()">Copy</button>
+        </div>
+        
+        {% endif %}
+    </div>
+    
+{% endblock content %}
