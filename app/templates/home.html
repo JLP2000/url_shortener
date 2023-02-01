@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='/styles/homepage.css') }}">
+    <script defer src="https://unpkg.com/@popperjs/core@2"></script>
+    <script defer src="{{url_for('static', filename='/js/history.js')}}"></script>
     <script defer src="{{url_for('static', filename='/js/session.js')}}"></script>
 {% endblock head %}
 {% block content %}
@@ -14,7 +16,7 @@
                  <h3>Enter URL</h3>
                  {{ form.url() }}
                  {% for error in form.url.errors %}
-                    <span style="color: red">[{{ error }}]</span>
+                    <div style="color: red">[{{ error }}]</div> <br></br>
                  {% endfor %}
                  {{ form.submit() }}
             </p>
@@ -23,13 +25,12 @@
         {% if result %}
         <div class="result-modal">
             <p>{{result[1]}}</p>
-            <p>
-                <a id="short-url" class="short-url" rel="external" href="//{{result[1]}}" >localhost:5000/{{result[0]}}</a>
-            </p>
-            <button onclick="copyToClipboard()">Copy</button>
+            <a class="short-url" href="{{result[1]}}" >localhost:5000/{{result[0]}}</a>
+            <button class="copy">Copy</button>
+            <div class="tooltip" role="tooltip">Link copied!</div>
         </div>
         
         {% endif %}
     </div>
-    
+
 {% endblock content %}

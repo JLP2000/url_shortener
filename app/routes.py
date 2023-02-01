@@ -3,36 +3,36 @@ from flask import render_template, redirect, url_for, jsonify
 from werkzeug import exceptions
 from app.models import Link
 from app.forms import LinkForm
-import re
+from app.utils.parse_url import parse_url
 
+# store recent link in global var
 x = []
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = LinkForm()
     if form.validate_on_submit():
-        link = Link(link_url=form.url.data)
-        link.set_hash(form.url.data)
-        print(f"short: {link.short}")
+        link = Link(link_url=parse_url(form.url.data))
+        link.set_hash(parse_url(form.url.data))
         existing = Link.query.filter_by(short=link.short).first()
-        print(f"existing: {existing}")
         if not existing:
             db.session.add(link)
             db.session.commit()
         global x
-        x = [link.short, link.link_url]
+        x = [link.short, parse_url(link.link_url)]
         return redirect(url_for('index'))
-
-    return render_template('home.html', form=form, result=x)
+        
+    # grab recent and reset global var
+    temp = x
+    x = []
+    return render_template('home.html', form=form, result=temp)
+        
 
 @app.route('/<string:hash>')
 def short(hash):
     link = Link.query.filter_by(short=hash).first_or_404()
-    x = re.search("^http*$", link.link_url)
-    if x:
-        return redirect(link.link_url)
-    else:
-        return redirect(f'https://{link.link_url}')
+    url = parse_url(link.link_url)
+    return redirect(url)
 
 @app.errorhandler(exceptions.NotFound)
 def error_404(err):

@@ -7,11 +7,11 @@ class Link(db.Model):
     link_url = db.Column(db.String(120), index=True, unique=True)
 
     def set_hash(self, url_str):
-        h = blake2b(digest_size=6)
+        h = blake2b(digest_size=3)
         b = url_str.encode(encoding='UTF-8')
         h.update(b)
         hash_str = h.hexdigest()
-        self.short = hash_str[:6]
+        self.short = hash_str
 
     def __repr__(self):
         return '<Link {} {}>'.format(self.link_url, self.short)
