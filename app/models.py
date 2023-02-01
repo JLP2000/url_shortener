@@ -5,6 +5,7 @@ class Link(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     short = db.Column(db.String(6), index=True, unique=True)
     link_url = db.Column(db.String(120), index=True, unique=True)
+    qr_path = db.Column(db.String(200), unique=True)
 
     def set_hash(self, url_str):
         h = blake2b(digest_size=3)

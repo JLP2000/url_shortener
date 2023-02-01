@@ -1,8 +1,8 @@
-"""Link table
+"""first
 
-Revision ID: a6ea05bfbf3c
+Revision ID: b5e20dbefe50
 Revises: 
-Create Date: 2023-01-31 15:40:15.007729
+Create Date: 2023-02-01 16:43:05.079587
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a6ea05bfbf3c'
+revision = 'b5e20dbefe50'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,9 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('short', sa.String(length=6), nullable=True),
     sa.Column('link_url', sa.String(length=120), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('qr_path', sa.String(length=200), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('qr_path')
     )
     with op.batch_alter_table('link', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_link_link_url'), ['link_url'], unique=True)

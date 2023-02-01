@@ -23,14 +23,17 @@
         </form>
 
         {% if result %}
+        <img src="" alt="">
         <div class="result-modal">
+            <img class="fav" src="http://www.google.com/s2/favicons?domain={{result[1]}}" />
             <p>{{result[1]}}</p>
             <a class="short-url" href="{{result[1]}}" >localhost:5000/{{result[0]}}</a>
+            <img class="qrcode" src="{{url_for('static', filename='images/qrcode-' + result[0] + '.png') }}" />
             <button class="copy">Copy</button>
-            <div class="tooltip" role="tooltip">Link copied!</div>
         </div>
         
         {% endif %}
+        <div class="tooltip" role="tooltip">Link copied!</div>
     </div>
 
 {% endblock content %}

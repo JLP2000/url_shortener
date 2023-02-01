@@ -4,9 +4,14 @@ from werkzeug import exceptions
 from app.models import Link
 from app.forms import LinkForm
 from app.utils.parse_url import parse_url
+import qrcode
+import os
+
 
 # store recent link in global var
 x = []
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -14,6 +19,12 @@ def index():
     if form.validate_on_submit():
         link = Link(link_url=parse_url(form.url.data))
         link.set_hash(parse_url(form.url.data))
+        img = qrcode.make(link.link_url)
+        path = './app/static/images'
+        # os.mkdir(path)
+        img.save(f'{path}/qrcode-{link.short}.png')
+        
+
         existing = Link.query.filter_by(short=link.short).first()
         if not existing:
             db.session.add(link)
@@ -36,15 +47,15 @@ def short(hash):
 
 @app.errorhandler(exceptions.NotFound)
 def error_404(err):
-    return jsonify({"message": f"Oops.. {err}"}), 404
+    return redirect('/')
 
 @app.errorhandler(exceptions.BadRequest)
 def handle_400(err):
-    return {'message': f'Oops! {err}'}, 400
+    return redirect('/')
 
 @app.errorhandler(exceptions.InternalServerError)
 def handle_500(err):
-    return {'message': f"It's not you, it's us...{err}"}, 500
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(debug=True)
